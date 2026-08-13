@@ -1,28 +1,44 @@
-# Lightcone
+# my-ledger
 
-Production-style starter for a LangGraph + FastAPI + React stack.
+Local-first personal financial warehouse.
 
-## Structure
+## Active components
 
-- `backend/` FastAPI service with LangGraph workflows
-- `frontend/` React (Vite) client
-- `main.py` re-exports the FastAPI app for `uvicorn`
+- `apps/ingestion`: Plaid API ingestion and raw-event capture.
+- `dwh`: dbt models that turn source-shaped records into warehouse tables.
+- `docker-compose.yml`: local PostgreSQL through Docker Compose.
 
-## Backend
+The intended data flow is:
 
-```bash
-uv run uvicorn backend.app.main:app --reload
+```text
+Plaid API → raw Postgres records + immutable event archive → dbt → curated warehouse tables
 ```
 
-Environment variables live in `.env` (see `.env.example`).
+Airbyte, Airflow, and GCP are intentionally not part of the initial setup. They can be added when an operational need exists without changing the warehouse contract.
 
-## Frontend
+## Start locally
 
-```bash
-cd frontend
-npm install
-cp .env.example .env
-npm run dev
-```
+1. Copy `.env.example` to `.env` and replace the local database password and Plaid credentials.
+2. Start PostgreSQL:
 
-The UI posts YouTube URLs to `POST /api/v1/youtube/process`.
+   ```sh
+   docker compose up -d db
+   ```
+
+3. Install the ingestion environment:
+
+   ```sh
+   cd apps/ingestion
+   uv sync
+   ```
+
+4. Install the dbt environment:
+
+   ```sh
+   cd dwh
+   uv sync
+   set -a; source ../../.env; set +a
+   uv run dbt debug --profiles-dir .
+   ```
+
+All financial records, raw API payloads, and credentials stay out of Git.

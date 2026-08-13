@@ -1,0 +1,9 @@
+name: my_ledger
+version: "1.0"
+config-version: 2
+
+profile: my_ledger
+
+model-paths: ["models"]
+target-path: target
+clean-targets: ["target", "dbt_packages"]

@@ -1,8 +1,18 @@
-.venv
+.DS_Store
+.idea/
 .env
-backend/.env
-frontend/.env
-frontend/node_modules/
-frontend/dist/
+.venv/
 __pycache__/
-*.pyc
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Local data and database state
+.data/
+postgres-data/
+
+# dbt generated artefacts
+dwh/target/
+dwh/logs/
+dwh/.user.yml
