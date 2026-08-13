@@ -14,6 +14,6 @@ __pycache__/
 postgres-data/
 
 # dbt generated artefacts
-dwh/target/
-dwh/logs/
-dwh/.user.yml
+dwh/transform/target/
+dwh/transform/logs/
+dwh/transform/.user.yml
