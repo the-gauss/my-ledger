@@ -1,5 +1,5 @@
 services:
-  db:
+  dwh:
     image: postgres:17-alpine
     environment:
       POSTGRES_DB: ${POSTGRES_DB:?set POSTGRES_DB in .env}

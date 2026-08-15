@@ -1,5 +1,12 @@
+COMPOSE = docker compose --env-file infra/.env -f infra/docker-compose.yml
+
+.PHONY = infra-up infra-down psql-dwh
+
 infra-up:
-	docker compose --env-file infra/.env -f infra/docker-compose.yml up -d
+	$(COMPOSE) up -d --wait
 
 infra-down:
-	docker compose --env-file infra/.env -f infra/docker-compose.yml down
+	$(COMPOSE) down
+
+psql-dwh:
+	$(COMPOSE) exec dwh sh -lc 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB"'
