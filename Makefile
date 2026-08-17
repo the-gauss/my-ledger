@@ -9,4 +9,4 @@ infra-down:
 	$(COMPOSE) down
 
 psql-dwh:
-	$(COMPOSE) exec dwh sh -lc 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB"'
+	$(COMPOSE) exec dwh sh -lc 'psql -U "$$POSTGRES_USER" -d "$$POSTGRES_DB"'
