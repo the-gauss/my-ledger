@@ -1,5 +1,3 @@
-BEGIN;
-
 -- Source evidence is append-only. The ingestion role receives INSERT/SELECT
 -- privileges only, so a normalized record can always be traced to Plaid's
 -- original response.
@@ -131,5 +129,3 @@ CREATE TABLE IF NOT EXISTS ingestion.sync_runs (
 
 CREATE INDEX IF NOT EXISTS sync_runs_item_started_idx
     ON ingestion.sync_runs (plaid_item_id, started_at DESC);
-
-COMMIT;
