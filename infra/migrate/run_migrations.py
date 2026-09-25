@@ -28,6 +28,8 @@ from pathlib import Path
 
 import psycopg
 
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
 
 MIGRATION_FILENAME = re.compile(r"^\d{3,8}(?:_\d{2})?_[a-z0-9_]+\.sql$")    # validates migration filenames, to reject badly named or non-SQL files
 ADVISORY_LOCK_NAME = "my-ledger:warehouse-migrations"
@@ -78,10 +80,21 @@ def checksum(path: Path) -> str:
     """Return the SHA-256 digest of a migration's exact UTF-8 source bytes."""
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
+class MigrationSettings(BaseSettings):
+    database_url: str
+
+    model_config = SettingsConfigDict(
+        env_file=Path(__file__).resolve().parents[1] / ".env",
+        env_file_encoding="utf-8",
+        extra='ignore'
+    )
 
 def database_url() -> str:
     """Read the libpq-compatible connection URL required by the runner."""
     value = os.environ.get("DATABASE_URL", "").strip()
+    if not value:
+        migration_settings = MigrationSettings()
+        value = migration_settings.database_url
     if not value:
         raise RuntimeError("DATABASE_URL environment variable is not set.")
 
